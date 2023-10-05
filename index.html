@@ -36,7 +36,7 @@
 <div id="div0">
     <div id="div0-map" style="background-color: blue;float: left"></div>    
     <div id="div0-tab" style="float: left">
-        <img style="float: left" src="https://static.wixstatic.com/media/36dcd7_be6f15f4ac014db8b86a4bd6820349e2~mv2.jpg/v1/fill/w_347,h_95,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/start_right-01.jpg">
+        <img style="float: left" onclick="vmode++;update(zeit)" src="https://static.wixstatic.com/media/36dcd7_be6f15f4ac014db8b86a4bd6820349e2~mv2.jpg/v1/fill/w_347,h_95,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/start_right-01.jpg">
         <h1 id="uhr" style="text-align: right;">T: 01:00:00</h1>
     </div>
     <div id="div0-graph" style="background-color: red;float: left;"></div>
@@ -70,7 +70,7 @@
 
 
 <script>
-
+vmode=0
 zeit=3600
 draw()
 update(zeit)
@@ -279,14 +279,21 @@ var layout = {     margin: {
    
       }
     };
+
+
+    vmode_arr = ["bar","scatter"]
+    if(vmode>1)[vmode=0]
 var trace4 = {
       x: histo.weite,
       y: histo.anzahl,
-      mode: 'lines',
-      type: 'scatter',
+     // mode: 'lines',
+      type: vmode_arr[vmode],//type: 'scatter',
       name: 'runners',
+      marker: {
+
+color: 'blue'},
       line: {
-       
+       shape: 'spline',
    // smoothing: 0.1,  // Adjust the smoothing parameter (0.0 to 1.0)
         color: 'blue',
         width: 2
