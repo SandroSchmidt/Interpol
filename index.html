@@ -34,12 +34,19 @@
  
  
 <div id="div0">
-    <div id="div0-map" style="background-color: blue;float: left"></div>    
-    <div id="div0-tab" style="float: left">
-        <img style="float: left" onclick="vmode++;update(zeit)" src="https://static.wixstatic.com/media/36dcd7_be6f15f4ac014db8b86a4bd6820349e2~mv2.jpg/v1/fill/w_347,h_95,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/start_right-01.jpg">
-        <h1 id="uhr" style="text-align: right;">T: 01:00:00</h1>
-    </div>
-    <div id="div0-graph" style="background-color: red;float: left;"></div>
+  <div id="div0-tab" style="float: left">
+    <h1  id="uhr" onclick="vmode++;update(zeit)" style="margin-top: 0%;padding-bottom: 0%;text-align: left;font-family: Arial, Helvetica, sans-serif;">T: 01:00:00</h1>
+<!--
+     <img style="float: left" onclick="vmode++;update(zeit)" src="https://static.wixstatic.com/media/36dcd7_be6f15f4ac014db8b86a4bd6820349e2~mv2.jpg/v1/fill/w_347,h_95,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/start_right-01.jpg">
+   -->
+  </div>
+  <div id="div0-map" style="background-color: rgb(137, 137, 156);float: left"></div>
+  <div id="div0-graph" style="background-color: rgb(146, 130, 130);float: left;">
+      </div>
+ 
+        
+   
+   
     <div id="div0-input" style="float: left;">
        
        
@@ -265,7 +272,9 @@ heatmaplayer.setData({
 
 var layout = {     margin: {
     b: 30, // Set the bottom margin to 0
-      t: 20  // Set the top margin to 0
+      t: 20,  // Set the top margin to 0,
+      l:60,
+      r:20
     },
      // title: 'Value over Distance',
       xaxis: {
@@ -281,23 +290,25 @@ var layout = {     margin: {
     };
 
 
-    vmode_arr = ["bar","scatter"]
-    if(vmode>1)[vmode=0]
+    vmode_arr = [["bar","linear"],["scatter","linear"],["scatter","spline"]]
+    if(vmode>vmode_arr.length-1)[vmode=0]
 var trace4 = {
       x: histo.weite,
       y: histo.anzahl,
      // mode: 'lines',
-      type: vmode_arr[vmode],//type: 'scatter',
+      type: vmode_arr[vmode][0],//type: 'scatter',
       name: 'runners',
       marker: {
 
 color: 'blue'},
       line: {
-       shape: 'spline',
+       shape: vmode_arr[vmode][1],//'spline',
    // smoothing: 0.1,  // Adjust the smoothing parameter (0.0 to 1.0)
         color: 'blue',
+
         width: 2
-      }
+      },
+      fill: 'tozeroy',
     };
 
     Plotly.update('div0-graph', trace4,layout)
@@ -312,11 +323,11 @@ fenster.breite -=20;
 // maindiv bekommt die größe übergeben
 d3.select('#div0').style('height',fenster.hoehe+"px")
                   .style('width',fenster.breite+"px")
-d3.select('#div0-map').style('height',fenster.hoehe*0.6+"px")
-                      .style('width',fenster.breite*0.7+"px")
-d3.select('#div0-tab').style('height',fenster.hoehe*0.6+"px")
-                  .style('width',fenster.breite*0.3+"px")
-d3.select('#div0-graph').style('height',fenster.hoehe*0.38+"px")
+d3.select('#div0-map').style('height',fenster.hoehe*0.48+"px")
+                      .style('width',fenster.breite*1+"px")
+d3.select('#div0-tab').style('height',fenster.hoehe*0.05+"px")
+                  .style('width',fenster.breite*1+"px")
+d3.select('#div0-graph').style('height',fenster.hoehe*0.45+"px")
                     .style('width',fenster.breite*1+"px")
 
                     d3.select('#div0-input').style('height',fenster.hoehe*0.02+"px")
