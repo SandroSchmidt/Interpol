@@ -50,7 +50,7 @@
     <div id="div0-input" style="float: left;">
        
        
-        <input type="range" min=0 max =10000 value=3600 style="width:100%" step="60" onchange="zeit=this.value; update(this.value)">
+        <input type="range" min=0 max =36000 value=3600 style="width:100%" step="60" onchange="zeit=this.value; update(this.value)">
     </div>
 </div>
  
@@ -77,26 +77,40 @@
 
 
 <script>
+  const farbschema = [ 'steelblue',
+        'cyan',
+        'lime',
+        'yellow',
+        'red'],
 vmode=0
 zeit=3600
 draw()
 update(zeit)
 
-//runners_gruppen_bilden(runners2)
+
+runners2=[[1,2],[2,3],[3,4],[1,2],[9,9],[8,9],[1,2],[2,3]]
+
+//temp = runners_gruppen_bilden(runners)
+//console.log(temp)
 function runners_gruppen_bilden(inds){
     //diese Funktion nimmt ein array mit [nettozeit, startzeit] und führt die läufer zusammen zu gruppen, return [netto,start,gruppengröße]
     
     temp =[]
-    for(i=0;i<inds.length;i++){
-     
-        for(o=0;o<inds.length;o++){
-   //   console.log(i+" - " + o)
-            if(i != o && inds[i][0]==inds[o][0]&& inds[i][1]==inds[o][1]){
+    for(i=0;i<inds.length;i++){  
+      gibts = false 
+        for(o=0;o<temp.length;o++){
+          
+             if(inds[i][0]==temp[o][0]&& inds[i][1]==temp[o][1]){
+              temp[o][2]++
                 console.log("dsa")
-            }
-           
-        }    
+            gibts = true
+              }       
+        }  
+        if (gibts == false){
+            temp.push([inds[i][0],inds[i][1],1])
+          }  
     }
+    return temp
 }
 function mytimer(){
  
@@ -147,7 +161,7 @@ if (wielam[f]<kk){
 
 histo = {weite:[],anzahl:[]}
 for (i=0;i<423;i++){
-    histo.weite.push(i*100)
+    histo.weite.push(i*100*0.000621371192 )
     histo.anzahl.push(0)
     
 }
@@ -157,8 +171,27 @@ sales=[]
     x = parseInt(Math.round(temp_arr[i]/100))
            histo.anzahl[x]++   
 
-           sales.push({lat:vollequ[x][0],lng:vollequ[x][1], anzahl:histo.anzahl[x]})
-}
+          
+    }
+
+    for (i=0;i<temp_arr.length;i++){
+      x = parseInt(Math.round(temp_arr[i]/100))
+      if(histo.anzahl[x]>0)
+   { sales.push({lat:vollequ[x+1][0],lng:vollequ[x+1][1], anzahl:histo.anzahl[x]})}
+    }
+/*
+    console.log(kreise)
+
+    kreise[100].setStyle()
+    for (i=0;i<423;i++){
+   //   x = parseInt(Math.round(temp_arr[i]/100))
+   kreise[i].setRadius(histo.anzahl[i])
+   po =  Math.round(histo.anzahl[i]/100)
+   kreise[i].setStyle({fillColor:farbschema[po-1]})
+      
+    }
+*/
+//polyline.bringToFront()
 
 
 /*
@@ -279,7 +312,8 @@ var layout = {     margin: {
      // title: 'Value over Distance',
       xaxis: {
   //      title: 'Distance in m',
-        range: [0, 42195]
+        range: [0, 42195*0.000621371192 ],
+        domain:[0,21]
       },
       yaxis: {
         title: 'runners per 100 m',
@@ -356,7 +390,7 @@ d3.select('#div0-graph').style('height',fenster.hoehe*0.45+"px")
 
     Plotly.newPlot('div0-graph',[], layout,config);
  // Create a map instance
- const map = L.map('div0-map', { maxZoom: 15,minZoom:12,zoomSnap: 0.5}).setView([ 51.473971555574416,
+ map = L.map('div0-map', { maxZoom: 15,minZoom:12,zoomSnap: 0.5}).setView([ 51.473971555574416,
     0.019177863286825275], 12);
 
 // Add a tile layer to the map
@@ -402,6 +436,7 @@ var heat = L.heatLayer(halb_heat, {
   */
  flag_lay = L.layerGroup().addTo(map)
   var heat_lay = L.layerGroup()
+  var heat2_lay = L.layerGroup()
   trac_lay = L.layerGroup().addTo(map)
   /*
   var heatvoll_lay = L.layerGroup().addTo(map)
@@ -410,7 +445,7 @@ var heat = L.heatLayer(halb_heat, {
   var heatdrei_lay = L.layerGroup().addTo(map)
   */
 var layerControl = L.control.layers({"streetmap":lay1,"topo":OpenTopoMap,"satellite":lay2,"stamen":Stadia_StamenTerrain},{
-  "heatmap":heat_lay,
+  "heatmap":heat_lay,"heatmap-san":heat2_lay,
  /* "heatmap full":heatvoll_lay,
   "heatmap half":heathalb_lay,
   "heatmap ten":heatzehn_lay,
@@ -469,6 +504,18 @@ for (i=0;zehnequ.length-1;i++){
 L.polyline([zehnequ[i],zehnequ[i+1]],{color:"black"}).addTo(map)
 }
 */
+
+kreise =[]
+
+for(i=0;i<423;i++){
+  kreise.push(L.circle(vollequ[i], {
+          color: "none",
+          fillColor: "steelblue",
+          fillOpacity: 1,
+          radius: 10
+}).addTo(heat2_lay))
+}
+
 }
 function redraw(){
 
